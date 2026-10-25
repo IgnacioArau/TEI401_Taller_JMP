@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reserva de hora | Taller Automotriz</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="encabezado">
+    <div class="contenedor encabezado-fila">
+      <img id="logo" class="logo oculto" alt="">
+      <div>
+        <h1 id="taller-nombre">Taller Automotriz</h1>
+        <p id="taller-eslogan">Reserva tu hora de atención en línea</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <form id="form-reserva" novalidate>
+
+      <!-- 1. Vehículo -->
+      <section class="tarjeta">
+        <h2><span class="num">1</span> Tu vehículo</h2>
+        <label for="patente">Patente</label>
+        <input type="text" id="patente" name="patente" maxlength="8"
+               placeholder="Ej: BCDF12" autocomplete="off" required>
+        <div class="error" id="error-patente"></div>
+      </section>
+
+      <!-- 2. Tipo de atención -->
+      <section class="tarjeta">
+        <h2><span class="num">2</span> Tipo de atención</h2>
+        <label for="tipo">¿Qué necesitas?</label>
+        <select id="tipo" name="tipo" required>
+          <option value="">Selecciona una opción…</option>
+          <!-- Las opciones se cargan desde el servidor (ver TIPOS en server.js) -->
+        </select>
+        <div class="error" id="error-tipo"></div>
+
+        <div id="bloque-otros" class="oculto">
+          <label for="detalle">Cuéntanos qué necesitas</label>
+          <textarea id="detalle" name="detalle" rows="3" maxlength="300"
+                    placeholder="Describe brevemente el problema o servicio"></textarea>
+          <div class="error" id="error-detalle"></div>
+        </div>
+      </section>
+
+      <!-- 3. Fecha y hora -->
+      <section class="tarjeta">
+        <h2><span class="num">3</span> Fecha y hora</h2>
+
+        <div class="calendario">
+          <div class="calendario-cabecera">
+            <button type="button" id="mes-anterior" aria-label="Mes anterior">&#8249;</button>
+            <strong id="mes-titulo"></strong>
+            <button type="button" id="mes-siguiente" aria-label="Mes siguiente">&#8250;</button>
+          </div>
+          <div class="calendario-semana">
+            <span>Lun</span><span>Mar</span><span>Mié</span><span>Jue</span><span>Vie</span><span>Sáb</span><span>Dom</span>
+          </div>
+          <div id="calendario-dias" class="calendario-dias"></div>
+        </div>
+        <div class="error" id="error-fecha"></div>
+
+        <div id="bloque-horas" class="oculto">
+          <h3 id="horas-titulo"></h3>
+          <div id="horas" class="horas"></div>
+          <div class="error" id="error-hora"></div>
+        </div>
+      </section>
+
+      <!-- 4. Contacto -->
+      <section class="tarjeta">
+        <h2><span class="num">4</span> Tus datos de contacto</h2>
+        <label for="nombre">Nombre</label>
+        <input type="text" id="nombre" name="nombre" maxlength="80" autocomplete="name" required>
+        <div class="error" id="error-nombre"></div>
+
+        <label for="telefono">Teléfono</label>
+        <input type="tel" id="telefono" name="telefono" maxlength="16"
+               placeholder="Ej: +56 9 1234 5678" autocomplete="tel" required>
+        <div class="error" id="error-telefono"></div>
+      </section>
+
+      <div id="mensaje" class="mensaje oculto" role="status"></div>
+      <button type="submit" id="btn-reservar" class="btn-principal">Reservar hora</button>
+    </form>
+  </main>
+
+  <footer class="pie">
+    <div class="contenedor">
+      <p id="pie-direccion"></p>
+      <p id="pie-horario"></p>
+      <p><a id="pie-telefono"></a></p>
+      <p id="pie-copy"></p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

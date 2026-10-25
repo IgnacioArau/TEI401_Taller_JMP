@@ -1,0 +1,14 @@
+{
+  "name": "reservas-taller",
+  "version": "1.0.0",
+  "description": "Reserva de horas para taller automotriz",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "mecanicos": "node mecanicos.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0",
+    "express": "^4.19.2"
+  }
+}

@@ -1,0 +1,127 @@
+/* ====== Colores y medidas (edítalos aquí) ====== */
+:root {
+  --color-primario: #0b3d91;
+  --color-primario-oscuro: #082c68;
+  --color-acento: #f58220;
+  --color-fondo: #f3f5f9;
+  --color-texto: #1d2433;
+  --color-borde: #d5dbe6;
+  --color-error: #c62828;
+  --color-ok: #2e7d32;
+  --radio: 10px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  line-height: 1.45;
+}
+
+.contenedor { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+
+.encabezado {
+  background: var(--color-primario);
+  color: #fff;
+  padding: 24px 0;
+  border-bottom: 4px solid var(--color-acento);
+}
+.encabezado-fila { display: flex; align-items: center; gap: 16px; }
+.logo { height: 56px; width: auto; max-width: 140px; object-fit: contain; border-radius: 6px; }
+.encabezado h1 { margin: 0; font-size: 1.7rem; }
+.encabezado p { margin: 4px 0 0; opacity: .9; }
+
+main { padding-top: 24px; padding-bottom: 32px; }
+
+.tarjeta {
+  background: #fff;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  padding: 20px;
+  margin-bottom: 18px;
+}
+.tarjeta h2 { margin: 0 0 14px; font-size: 1.15rem; display: flex; align-items: center; gap: 10px; }
+.tarjeta h3 { margin: 18px 0 10px; font-size: 1rem; }
+.num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--color-acento); color: #fff; font-size: .9rem;
+}
+
+label { display: block; font-weight: 600; margin: 12px 0 6px; }
+label:first-of-type { margin-top: 0; }
+
+input, select, textarea {
+  width: 100%;
+  padding: 11px 12px;
+  font: inherit;
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  background: #fff;
+}
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--color-primario);
+  border-color: var(--color-primario);
+}
+input.invalido, select.invalido, textarea.invalido { border-color: var(--color-error); }
+#patente { text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
+
+.error { color: var(--color-error); font-size: .88rem; min-height: 1.1em; margin-top: 4px; }
+.oculto { display: none; }
+
+/* ====== Calendario ====== */
+.calendario-cabecera {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 10px; text-transform: capitalize;
+}
+.calendario-cabecera button {
+  width: 36px; height: 36px; font-size: 1.4rem; line-height: 1;
+  border: 1px solid var(--color-borde); background: #fff; border-radius: 8px; cursor: pointer;
+}
+.calendario-cabecera button:disabled { opacity: .35; cursor: not-allowed; }
+
+.calendario-semana, .calendario-dias {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center;
+}
+.calendario-semana span { font-size: .8rem; color: #667; padding: 4px 0; }
+
+.dia {
+  padding: 10px 0; border: 1px solid transparent; border-radius: 8px;
+  background: #eef2fa; cursor: pointer; font: inherit;
+}
+.dia:hover:not(:disabled) { border-color: var(--color-primario); }
+.dia:disabled { background: transparent; color: #b5bccb; cursor: not-allowed; }
+.dia.hoy { font-weight: 700; border-color: var(--color-acento); }
+.dia.seleccionado { background: var(--color-primario); color: #fff; }
+.dia-vacio { visibility: hidden; }
+
+/* ====== Horas ====== */
+.horas { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 8px; }
+.hora {
+  padding: 10px 0; text-align: center; font: inherit; cursor: pointer;
+  border: 1px solid var(--color-primario); color: var(--color-primario);
+  background: #fff; border-radius: 8px;
+}
+.hora:hover:not(:disabled) { background: #eef2fa; }
+.hora:disabled { border-color: var(--color-borde); color: #b5bccb; background: #f6f7fa; text-decoration: line-through; cursor: not-allowed; }
+.hora.seleccionada { background: var(--color-primario); color: #fff; }
+.sin-horas { color: #667; }
+
+/* ====== Mensajes y botón ====== */
+.mensaje { padding: 12px 14px; border-radius: 8px; margin-bottom: 14px; font-weight: 600; }
+.mensaje.ok { background: #e8f5e9; color: var(--color-ok); border: 1px solid #a5d6a7; }
+.mensaje.error-msg { background: #fdecea; color: var(--color-error); border: 1px solid #f5b5b0; }
+
+.btn-principal {
+  width: 100%; padding: 14px; font: inherit; font-size: 1.05rem; font-weight: 700;
+  color: #fff; background: var(--color-acento); border: 0; border-radius: var(--radio); cursor: pointer;
+}
+.btn-principal:hover:not(:disabled) { filter: brightness(.95); }
+.btn-principal:disabled { opacity: .6; cursor: wait; }
+
+.pie { text-align: center; padding: 18px 0; color: #667; font-size: .85rem; }
+.pie p { margin: 2px 0; }
+.pie a { color: var(--color-primario); font-weight: 600; text-decoration: none; }
