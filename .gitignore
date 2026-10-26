@@ -1,0 +1,5 @@
+node_modules/
+taller.db
+taller.db-journal
+taller.db-wal
+taller.db-shm

@@ -1,0 +1,109 @@
+/* Panel de administración. Usa las variables de color de styles.css. */
+
+.contenedor-admin { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+.admin main { padding-top: 20px; padding-bottom: 40px; }
+.encabezado-fila { justify-content: space-between; }
+.enlace-publico { color: #fff; font-size: .9rem; opacity: .9; }
+
+/* ===== Botones ===== */
+.btn-acento, .btn-secundario, .btn-chico {
+  font: inherit; font-weight: 700; border-radius: 8px; cursor: pointer; padding: 10px 16px; border: 1px solid transparent;
+}
+.btn-acento { background: var(--color-acento); color: #fff; }
+.btn-acento:hover:not(:disabled) { filter: brightness(.95); }
+.btn-secundario { background: #fff; color: var(--color-primario); border-color: var(--color-primario); }
+.btn-secundario:hover:not(:disabled) { background: #eef2fa; }
+.btn-chico { padding: 6px 10px; font-size: .85rem; background: #fff; color: var(--color-primario); border-color: var(--color-borde); }
+.btn-chico:hover:not(:disabled) { border-color: var(--color-primario); }
+.btn-chico.peligro { color: var(--color-error); }
+.btn-chico.peligro:hover:not(:disabled) { border-color: var(--color-error); }
+button:disabled { opacity: .55; cursor: not-allowed; }
+
+/* ===== Pestañas ===== */
+.pestanas { display: flex; gap: 6px; margin-bottom: 16px; border-bottom: 2px solid var(--color-borde); }
+.pestana {
+  font: inherit; font-weight: 700; padding: 10px 18px; background: none; border: 0; cursor: pointer;
+  color: #667; border-bottom: 3px solid transparent; margin-bottom: -2px;
+}
+.pestana.activa { color: var(--color-primario); border-bottom-color: var(--color-acento); }
+
+/* ===== Resumen ===== */
+.resumen { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.dato {
+  background: #fff; border: 1px solid var(--color-borde); border-radius: var(--radio);
+  padding: 12px 16px; min-width: 150px; flex: 1 1 150px;
+}
+.dato strong { display: block; font-size: 1.6rem; color: var(--color-primario); line-height: 1.1; }
+.dato span { font-size: .85rem; color: #667; }
+
+/* ===== Campos ===== */
+.campo { min-width: 0; }
+.campo label { margin: 0 0 4px; font-size: .88rem; }
+.campo-ancho { flex: 1 1 220px; }
+.filtros { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; padding: 16px; }
+.filtros .campo { flex: 0 1 160px; }
+.filtros .campo-ancho { flex: 1 1 220px; }
+.filtros-botones { display: flex; gap: 8px; margin-left: auto; }
+.fila-agregar { display: flex; gap: 12px; align-items: flex-end; padding: 16px; }
+
+/* ===== Lista de reservas ===== */
+.grupo-dia { margin-bottom: 18px; }
+.grupo-dia h3 {
+  margin: 0 0 8px; font-size: 1rem; color: var(--color-primario-oscuro);
+  display: flex; gap: 10px; align-items: baseline;
+}
+.grupo-dia h3 small { font-weight: 400; color: #667; text-transform: none; }
+.tabla-scroll { overflow-x: auto; background: #fff; border: 1px solid var(--color-borde); border-radius: var(--radio); }
+table { width: 100%; border-collapse: collapse; font-size: .93rem; }
+th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #edf0f6; vertical-align: top; }
+th { background: #f6f8fc; font-size: .8rem; text-transform: uppercase; letter-spacing: .03em; color: #556; white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.hora-col { font-weight: 700; white-space: nowrap; }
+td.patente-col { font-weight: 700; letter-spacing: 1.5px; white-space: nowrap; }
+td.acciones { white-space: nowrap; text-align: right; }
+td.acciones .btn-chico + .btn-chico { margin-left: 6px; }
+.sub { display: block; color: #667; font-size: .82rem; }
+.vacio { background: #fff; border: 1px dashed var(--color-borde); border-radius: var(--radio); padding: 28px; text-align: center; color: #667; }
+.nota-limite { color: #8a5a00; font-size: .85rem; margin-bottom: 8px; }
+
+/* ===== Mecánicos ===== */
+.mecanicos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
+.mecanico { background: #fff; border: 1px solid var(--color-borde); border-radius: var(--radio); padding: 16px; }
+.mecanico.inactivo { background: #f6f7fa; }
+.mecanico-cab { display: flex; gap: 8px; align-items: center; }
+.mecanico-cab input { font-weight: 600; }
+.insignia { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: .75rem; font-weight: 700; white-space: nowrap; }
+.insignia.ok { background: #e8f5e9; color: var(--color-ok); }
+.insignia.baja { background: #eceff4; color: #667; }
+.insignia.aus { background: #fff3e0; color: #8a5a00; }
+.mecanico-meta { display: flex; gap: 8px; align-items: center; justify-content: space-between; margin: 10px 0; font-size: .88rem; color: #667; }
+.mecanico h4 { margin: 14px 0 6px; font-size: .85rem; color: #556; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; min-height: 28px; }
+.chip {
+  display: inline-flex; gap: 6px; align-items: center; background: #fff3e0; color: #6b4600;
+  border-radius: 999px; padding: 3px 4px 3px 10px; font-size: .82rem;
+}
+.chip button { border: 0; background: rgba(0,0,0,.08); border-radius: 50%; width: 20px; height: 20px; cursor: pointer; line-height: 1; }
+.sin-datos { color: #889; font-size: .85rem; }
+.form-ausencia { display: grid; grid-template-columns: 1fr 1.2fr; gap: 6px; margin-top: 10px; }
+.form-ausencia button { grid-column: 1 / -1; }
+
+/* ===== Diálogo ===== */
+dialog { border: 0; border-radius: 12px; padding: 0; width: min(640px, calc(100vw - 24px)); max-height: calc(100vh - 24px); overflow: auto; box-shadow: 0 10px 40px rgba(0,0,0,.3); }
+dialog::backdrop { background: rgba(20, 28, 45, .55); }
+dialog form { padding: 22px; }
+dialog h2 { margin: 0 0 16px; font-size: 1.25rem; }
+dialog .campo { margin-bottom: 12px; }
+.grid-2, .grid-3 { display: grid; gap: 12px; }
+.grid-2 { grid-template-columns: 1fr 1fr; }
+.grid-3 { grid-template-columns: 1.1fr 1.1fr 1.3fr; }
+.ayuda { margin: 0 0 8px; font-size: .85rem; color: #667; min-height: 1.2em; }
+.dialogo-botones { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
+
+@media (max-width: 640px) {
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .filtros-botones { margin-left: 0; width: 100%; }
+  .filtros-botones button { flex: 1; }
+  .fila-agregar { flex-wrap: wrap; }
+  .mecanicos-grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Administración | Taller Automotriz</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin">
+  <header class="encabezado">
+    <div class="contenedor-admin encabezado-fila">
+      <div>
+        <h1 id="taller-nombre">Taller Automotriz</h1>
+        <p>Panel de administración</p>
+      </div>
+      <a class="enlace-publico" href="/" target="_blank" rel="noopener">Ver página de reservas</a>
+    </div>
+  </header>
+
+  <main class="contenedor-admin">
+    <nav class="pestanas" role="tablist" aria-label="Secciones">
+      <button type="button" role="tab" id="tab-reservas" class="pestana activa" aria-selected="true" aria-controls="panel-reservas">Reservas</button>
+      <button type="button" role="tab" id="tab-mecanicos" class="pestana" aria-selected="false" aria-controls="panel-mecanicos">Mecánicos</button>
+    </nav>
+
+    <div id="mensaje" class="mensaje oculto" role="status" aria-live="polite"></div>
+
+    <!-- ===== RESERVAS ===== -->
+    <section id="panel-reservas" role="tabpanel" aria-labelledby="tab-reservas">
+      <div class="resumen" id="resumen-reservas"></div>
+
+      <form id="filtros" class="tarjeta filtros">
+        <div class="campo">
+          <label for="f-desde">Desde</label>
+          <input type="date" id="f-desde">
+        </div>
+        <div class="campo">
+          <label for="f-hasta">Hasta</label>
+          <input type="date" id="f-hasta">
+        </div>
+        <div class="campo">
+          <label for="f-mecanico">Mecánico</label>
+          <select id="f-mecanico"><option value="">Todos</option></select>
+        </div>
+        <div class="campo campo-ancho">
+          <label for="f-q">Buscar</label>
+          <input type="search" id="f-q" placeholder="Patente, nombre o teléfono" autocomplete="off">
+        </div>
+        <div class="filtros-botones">
+          <button type="button" id="f-limpiar" class="btn-secundario">Restablecer</button>
+          <button type="button" id="btn-nueva" class="btn-acento">+ Nueva reserva</button>
+        </div>
+      </form>
+
+      <div id="lista-reservas" class="lista-reservas" aria-live="polite"></div>
+    </section>
+
+    <!-- ===== MECÁNICOS ===== -->
+    <section id="panel-mecanicos" role="tabpanel" aria-labelledby="tab-mecanicos" class="oculto">
+      <div class="resumen" id="resumen-mecanicos"></div>
+
+      <form id="form-mecanico" class="tarjeta fila-agregar">
+        <div class="campo campo-ancho">
+          <label for="m-nombre">Agregar mecánico</label>
+          <input type="text" id="m-nombre" maxlength="60" placeholder="Nombre y apellido" autocomplete="off" required>
+        </div>
+        <button type="submit" class="btn-acento">Agregar</button>
+      </form>
+
+      <div id="lista-mecanicos" class="mecanicos-grid"></div>
+    </section>
+  </main>
+
+  <!-- ===== Formulario de reserva (crear / editar) ===== -->
+  <dialog id="dlg-reserva" aria-labelledby="dlg-titulo">
+    <form id="form-reserva-admin" novalidate>
+      <h2 id="dlg-titulo">Nueva reserva</h2>
+
+      <div class="grid-2">
+        <div class="campo">
+          <label for="r-patente">Patente</label>
+          <input type="text" id="r-patente" maxlength="8" placeholder="Ej: BCDF12" autocomplete="off">
+        </div>
+        <div class="campo">
+          <label for="r-tipo">Tipo de atención</label>
+          <select id="r-tipo"><option value="">Selecciona…</option></select>
+        </div>
+      </div>
+
+      <div class="campo oculto" id="r-bloque-detalle">
+        <label for="r-detalle">Detalle de "Otros"</label>
+        <textarea id="r-detalle" rows="2" maxlength="300" placeholder="Qué necesita el cliente"></textarea>
+      </div>
+
+      <div class="grid-2">
+        <div class="campo">
+          <label for="r-nombre">Nombre del cliente</label>
+          <input type="text" id="r-nombre" maxlength="80" autocomplete="off">
+        </div>
+        <div class="campo">
+          <label for="r-telefono">Teléfono</label>
+          <input type="tel" id="r-telefono" maxlength="16" placeholder="+56 9 1234 5678" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="campo">
+          <label for="r-fecha">Fecha</label>
+          <input type="date" id="r-fecha">
+        </div>
+        <div class="campo">
+          <label for="r-hora">Hora</label>
+          <select id="r-hora" disabled><option value="">Elige una fecha</option></select>
+        </div>
+        <div class="campo">
+          <label for="r-mecanico">Mecánico</label>
+          <select id="r-mecanico" disabled><option value="">Automático</option></select>
+        </div>
+      </div>
+      <p class="ayuda" id="r-ayuda"></p>
+
+      <div class="error" id="r-error" role="alert"></div>
+
+      <div class="dialogo-botones">
+        <button type="button" id="r-cancelar" class="btn-secundario">Cancelar</button>
+        <button type="submit" id="r-guardar" class="btn-acento">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="admin.js"></script>
+</body>
+</html>
