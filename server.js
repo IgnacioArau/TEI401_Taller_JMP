@@ -4,8 +4,27 @@ const fs = require('fs');
 const crypto = require('crypto');
 const Database = require('./sqlite');
 
+// ====== Configuración secreta (archivo .env) ======
+// Si existe un archivo ".env" junto a este archivo, se leen de ahí variables como ADMIN_PASSWORD.
+// Copia ".env.example" como ".env" y edítalo. El archivo .env NO se sube a GitHub (está en .gitignore).
+// Las variables que ya estén definidas en el sistema tienen prioridad sobre las del archivo.
+const RUTA_ENV = path.join(__dirname, '.env');
+if (fs.existsSync(RUTA_ENV)) {
+  try {
+    process.loadEnvFile(RUTA_ENV);
+  } catch (e) {
+    console.error(`No se pudo leer el archivo .env: ${e.message}`);
+    process.exit(1);
+  }
+}
+
 // ====== Configuración del taller (edítala aquí) ======
 const PORT = process.env.PORT || 3000;
+// Dirección en la que escucha el servidor. Por defecto solo desde el mismo equipo (127.0.0.1), que es lo correcto
+// cuando hay un proxy con HTTPS delante (Caddy). Para abrir la página desde otro dispositivo de tu red usa HOST=0.0.0.0.
+const HOST = process.env.HOST || '127.0.0.1';
+// NODE_ENV=production (lo define el servicio en el servidor) activa controles extra: exige contraseña de administrador.
+const ES_PRODUCCION = process.env.NODE_ENV === 'production';
 const ZONA_HORARIA = 'America/Santiago';
 const MAX_DIAS_ADELANTE = 60;        // hasta cuántos días en el futuro se puede reservar
 
@@ -147,6 +166,21 @@ function horasDelDia(fecha) {
 
 // ====== Servidor ======
 const app = express();
+app.disable('x-powered-by');
+// Detrás de Caddy (en el mismo servidor) la IP real del visitante y el protocolo llegan en cabeceras X-Forwarded-*.
+app.set('trust proxy', 'loopback');
+
+// Cabeceras de seguridad básicas. HSTS solo se envía cuando la visita llegó por HTTPS.
+app.use((req, res, next) => {
+  res.set({
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'same-origin'
+  });
+  if (req.secure) res.set('Strict-Transport-Security', 'max-age=15552000');   // 180 días
+  next();
+});
+
 app.use(express.json());
 
 // Archivos del frontend
@@ -248,13 +282,24 @@ app.post('/api/reservas', (req, res) => {
 // ======================================================================
 // ====== Administración (panel en /admin) ==============================
 // ======================================================================
-// Acceso protegido con usuario y contraseña (HTTP Basic).
+// Acceso protegido con usuario y contraseña (HTTP Basic). Se definen en el archivo ".env" (ver ".env.example"):
 //   ADMIN_USER      usuario (por defecto "admin")
-//   ADMIN_PASSWORD  contraseña. Si no la defines, se genera una al azar en cada arranque y se muestra en la consola.
+//   ADMIN_PASSWORD  contraseña. Si no la defines, en tu computador se genera una al azar en cada arranque y se muestra
+//                   en la consola; en el servidor (NODE_ENV=production) el programa NO arranca sin ella.
 // IMPORTANTE: si publicas el sitio en internet, sírvelo con HTTPS; de lo contrario la contraseña viaja sin cifrar.
 const ADMIN_USUARIO = process.env.ADMIN_USER || 'admin';
+const CLAVE_DE_EJEMPLO = 'CAMBIA-ESTA-CLAVE-LARGA';   // la que trae .env.example: nunca se acepta en producción
 const ADMIN_CLAVE_DEFINIDA = Boolean(process.env.ADMIN_PASSWORD);
+
+if (ES_PRODUCCION && (!ADMIN_CLAVE_DEFINIDA || process.env.ADMIN_PASSWORD === CLAVE_DE_EJEMPLO)) {
+  console.error('ERROR: falta definir una contraseña de administrador propia.');
+  console.error('Escribe ADMIN_PASSWORD="tu-contraseña-larga" en el archivo .env (copia .env.example) y reinicia.');
+  process.exit(1);
+}
 const ADMIN_CLAVE = process.env.ADMIN_PASSWORD || crypto.randomBytes(9).toString('base64url');
+if (ADMIN_CLAVE_DEFINIDA && ADMIN_CLAVE.length < 10) {
+  console.warn('AVISO: la contraseña de administrador es corta. Usa 12 o más caracteres.');
+}
 
 function textoIgual(a, b) {
   const ha = crypto.createHash('sha256').update(String(a)).digest();
@@ -262,7 +307,38 @@ function textoIgual(a, b) {
   return crypto.timingSafeEqual(ha, hb);
 }
 
+// Límite de intentos: tras 10 contraseñas incorrectas desde una misma IP, se bloquea el acceso por 15 minutos.
+// (Entrar sin credenciales, como hace el navegador antes de pedir la contraseña, no cuenta como intento.)
+const INTENTOS_MAXIMOS = 10;
+const VENTANA_MS = 15 * 60 * 1000;
+const intentosFallidos = new Map();   // ip -> { cantidad, desde }
+
+function segundosDeBloqueo(ip) {
+  const r = intentosFallidos.get(ip);
+  if (!r) return 0;
+  const restante = r.desde + VENTANA_MS - Date.now();
+  if (restante <= 0) { intentosFallidos.delete(ip); return 0; }
+  return r.cantidad >= INTENTOS_MAXIMOS ? Math.ceil(restante / 1000) : 0;
+}
+
+function registrarIntentoFallido(ip) {
+  const r = intentosFallidos.get(ip);
+  if (!r || Date.now() > r.desde + VENTANA_MS) intentosFallidos.set(ip, { cantidad: 1, desde: Date.now() });
+  else r.cantidad++;
+}
+
+setInterval(() => {   // limpieza de registros vencidos
+  const ahora = Date.now();
+  for (const [ip, r] of intentosFallidos) if (ahora > r.desde + VENTANA_MS) intentosFallidos.delete(ip);
+}, VENTANA_MS).unref();
+
 function requiereAdmin(req, res, next) {
+  const bloqueo = segundosDeBloqueo(req.ip);
+  if (bloqueo) {
+    res.set('Retry-After', String(bloqueo));
+    return res.status(429).type('text/plain').send('Demasiados intentos fallidos. Espera unos minutos e inténtalo de nuevo.');
+  }
+
   const m = /^Basic (.+)$/.exec(req.headers.authorization || '');
   if (m) {
     const credenciales = Buffer.from(m[1], 'base64').toString('utf8');
@@ -271,7 +347,11 @@ function requiereAdmin(req, res, next) {
     const clave = i >= 0 ? credenciales.slice(i + 1) : '';
     const okUsuario = textoIgual(usuario, ADMIN_USUARIO);
     const okClave = textoIgual(clave, ADMIN_CLAVE);
-    if (okUsuario && okClave) return next();
+    if (okUsuario && okClave) {
+      intentosFallidos.delete(req.ip);
+      return next();
+    }
+    registrarIntentoFallido(req.ip);
   }
   res.set('WWW-Authenticate', 'Basic realm="Administracion del taller", charset="UTF-8"');
   res.status(401).type('text/plain').send('Acceso restringido.');
@@ -566,11 +646,12 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Error interno del servidor.' });
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor listo en http://localhost:${PORT}`);
-  console.log(`Panel de administración: http://localhost:${PORT}/admin`);
+app.listen(PORT, HOST, () => {
+  const direccion = (HOST === '0.0.0.0' || HOST === '127.0.0.1') ? 'localhost' : HOST;
+  console.log(`Servidor listo en http://${direccion}:${PORT}`);
+  console.log(`Panel de administración: http://${direccion}:${PORT}/admin`);
   console.log(`  Usuario: ${ADMIN_USUARIO}`);
   console.log(ADMIN_CLAVE_DEFINIDA
-    ? '  Contraseña: la definida en ADMIN_PASSWORD'
-    : `  Contraseña (temporal, cambia en cada arranque): ${ADMIN_CLAVE}\n  Para fijarla usa la variable de entorno ADMIN_PASSWORD.`);
+    ? '  Contraseña: la definida en ADMIN_PASSWORD (archivo .env)'
+    : `  Contraseña (temporal, cambia en cada arranque): ${ADMIN_CLAVE}\n  Para fijar la tuya, copia .env.example como .env y escribe ADMIN_PASSWORD.`);
 });

@@ -1,0 +1,10 @@
+# Secretos y datos: nunca deben subirse a GitHub
+.env
+taller.db
+taller.db-journal
+taller.db-wal
+taller.db-shm
+
+# Dependencias
+node_modules/
+.npm/

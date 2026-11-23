@@ -1,0 +1,26 @@
+# Servicio de systemd: mantiene la página encendida, la reinicia si falla y la arranca con el servidor.
+# Se copia a /etc/systemd/system/taller.service (ver deploy/GUIA-LIGHTSAIL.md).
+# La contraseña de administrador NO va aquí: está en /opt/taller/.env.
+
+[Unit]
+Description=Reservas Taller Automotriz
+After=network.target
+
+[Service]
+Type=simple
+User=taller
+Group=taller
+WorkingDirectory=/opt/taller
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=5
+
+# Endurecimiento básico
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target
