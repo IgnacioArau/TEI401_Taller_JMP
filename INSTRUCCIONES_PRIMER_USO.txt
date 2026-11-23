@@ -1,0 +1,25 @@
+GUÍA PARA ABRIR EL TALLER EN TU COMPUTADOR
+
+PASO 1. Instala Node.js desde https://nodejs.org/ (usa la versión 26). Instala también Visual Studio Code desde https://code.visualstudio.com/ si aún no lo tienes. Después de instalar Node.js, cierra y abre de nuevo Visual Studio Code.
+
+PASO 2. Descarga el ZIP actualizado. En Windows haz clic derecho sobre el ZIP y elige «Extraer todo». En macOS haz doble clic para descomprimirlo.
+
+PASO 3. Abre Visual Studio Code. En «Archivo > Abrir carpeta», elige la carpeta Taller_JMP_Actualizado extraída. Debes ver los archivos package.json, server.js, index.html y README.md a la izquierda. No abras solo index.html.
+
+PASO 4. En el menú de Visual Studio Code elige «Terminal > Nueva terminal». Abajo aparecerá una consola. Escribe «node -v» y presiona Enter. Después escribe «npm -v» y presiona Enter. Si muestran números de versión, está instalado correctamente.
+
+PASO 5. En esa misma terminal escribe «npm install» y presiona Enter. Este comando descarga las bibliotecas necesarias. Se hace al preparar el proyecto por primera vez, o cuando cambian las dependencias. En Windows, si PowerShell bloquea npm, escribe «npm.cmd install» en su lugar.
+
+PASO 6. Cuando termine el paso anterior, escribe «npm start» y presiona Enter (o «npm.cmd start» si PowerShell bloquea npm). Deja abierta la terminal. Debe aparecer «Servidor listo en http://localhost:3000» y también una contraseña temporal del administrador.
+
+PASO 7. Abre Google Chrome, Microsoft Edge o Safari. En la barra de direcciones escribe http://localhost:3000 y presiona Enter. Ya puedes ver la interfaz pública y probar las reservas.
+
+PASO 8. Para revisar las reservas guardadas, abre http://localhost:3000/admin en otra pestaña. Escribe el usuario «admin» y copia la contraseña temporal que se imprimió en la terminal al iniciar. Puedes ver, crear, editar y eliminar reservas y administrar mecánicos.
+
+PASO 9. Para cerrar el servidor, vuelve a la terminal de Visual Studio Code y presiona Ctrl+C. Para abrir la página de nuevo otro día, abre la misma carpeta, ve a «Terminal > Nueva terminal», escribe «npm start» y abre http://localhost:3000. No necesitas repetir «npm install» cada vez.
+
+IMPORTANTE. La información se guarda en el archivo taller.db, que el proyecto crea automáticamente al arrancar. No lo borres si quieres conservar las reservas. Si ya habías usado la versión antigua, detén ambos servidores y COPIA el archivo taller.db de la carpeta antigua a la nueva carpeta Taller_JMP_Actualizado ANTES de abrirla con npm start. Conserva una copia de respaldo. El servidor añadirá las columnas nuevas a esa base de datos sin borrar las reservas anteriores.
+
+LOS CAMBIOS. La ficha de vehículo incluye «Marca y modelo del vehículo» y «Kilometraje actual (km)». Los tipos de servicio se ajustaron de acuerdo con las indicaciones recibidas. Para las reservas nuevas se ofrecen las horas 09:00, 10:00 y 10:30, y el mismo mecánico no puede ser asignado a 10:00 y 10:30 simultáneamente. El aviso indica que los vehículos deben llegar a más tardar a las 10:30.
+
+ESTO ES LOCAL. http://localhost:3000 solo funciona en tu computadora mientras el servidor está encendido. Todavía no es un sitio web publicado en Internet. Antes de publicarlo debes configurar contraseñas seguras, HTTPS y respaldos.
