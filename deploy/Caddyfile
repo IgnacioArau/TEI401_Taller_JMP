@@ -1,0 +1,13 @@
+# Configuración de Caddy (proxy con HTTPS automático) para el servidor de Lightsail.
+# Reemplaza "tudominio.cl" por tu dominio real (en las dos líneas).
+# Caddy obtiene y renueva solo el certificado HTTPS, siempre que el dominio ya apunte a la IP del servidor
+# y los puertos 80 y 443 estén abiertos.
+
+www.tudominio.cl {
+	redir https://tudominio.cl{uri} permanent
+}
+
+tudominio.cl {
+	encode gzip
+	reverse_proxy 127.0.0.1:3000
+}
